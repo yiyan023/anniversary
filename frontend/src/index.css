@@ -1,11 +1,14 @@
+@font-face {
+	font-family: 'Esteban';
+	src: url('../assets/Esteban-Regular.ttf');
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #a64d79;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -28,11 +31,17 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: 'Esteban', serif;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+p {
+	opacity: 50%;
+	margin-top: 0px
 }
 
 button {
@@ -42,16 +51,37 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  color:#a64d79;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 button:hover {
-  border-color: #646cff;
+  transform: translateY(-5px);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+	background-color: #ffe6f3
+}
+
+input {
+	background-color: #a64d79;
+	outline: 1px solid white;
+	font-family: 'Esteban', serif;
+	border:none;
+	border-radius: 7.5px;
+	padding-left: 10px;
+}	
+
+input::placeholder {
+	color: white;
+	font-family: 'Esteban', serif;
+	opacity: 50%;
 }
 
 @media (prefers-color-scheme: light) {
