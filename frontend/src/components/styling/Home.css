@@ -6,26 +6,6 @@
 	flex-direction: column;
 }
 
-.fade-1 {
-	opacity: 0%;
-	animation: fadeIn 1s ease-in-out 2s forwards;
-}
-
-.fade-2 {
-	opacity: 0%;
-	animation: fadeIn 1s ease-in-out 5s forwards;
-}
-
-.fade-3 {
-	opacity: 0%;
-	animation: fadeIn 1s ease-in-out 8s forwards;
-}
-
-.fade-4 {
-	opacity: 0%;
-	animation: fadeIn 1s ease-in-out 10s forwards;
-}
-
 .poem-container p {
 	font-size: 24px;
 }
@@ -41,12 +21,3 @@
 	  font-size: 16px;
 	}
   }
-
-@keyframes fadeIn {
-	0% {
-	  opacity: 0;
-	}
-	100% {
-	  opacity: 1;
-	}
-}

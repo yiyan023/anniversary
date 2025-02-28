@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import "./styling/Home.css"
 import { useLocation, useNavigate } from 'react-router-dom';
+import Toggle from './Toggle';
+import { useAppContext } from '../Context';
+import { getBackgroundColor, getButtonColor } from '../Constants';
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 const Home = () => {
 	const [displayedText, setDisplayedText] = useState("");
@@ -8,51 +13,62 @@ const Home = () => {
 	const finalText = "hi baby."
 	const navigate = useNavigate();
 	const location = useLocation();
+	const buttonRef = useRef(null);
+	const { animations }= useAppContext();
 
 	const goPoems = () => {
 		navigate('/poems');
 	}
 
-	const getBackgroundColor = () => {
-		switch (location.pathname) {
-			case '/poem':
-				return 'white'
-			
-			default:
-				return '#a64d79'
-		}
-	}
-
 	useEffect(() => {
-		const color = getBackgroundColor();
+		const color = getBackgroundColor(animations);
 		document.body.style.backgroundColor = color;
-	}, [location.pathname]);
-
+	}, [location.pathname, animations]);
 
 	useEffect(() => {
-		let addChar;
-		function type() {
-			setDisplayedText((prev) => prev + finalText.charAt(textIdx))
-			setTextIdx((prev) => prev + 1);
-		}
+		const color = getButtonColor(animations);
+		buttonRef.current.style.color = color;
+	}, [animations]);
 
-		if (textIdx < finalText.length) {
-			addChar = setInterval(type, 75)
-		}
+	useEffect(() => {
+		AOS.init({
+			duration: 1000
+		});
+	}, []);
 
-		return () => clearInterval(addChar);
+	useEffect(() => {
+		if (animations) {
+			let addChar;
+			function type() {
+				setDisplayedText((prev) => prev + finalText.charAt(textIdx))
+				setTextIdx((prev) => prev + 1);
+			}
+
+			if (textIdx < finalText.length) {
+				addChar = setInterval(type, 75)
+			}
+
+			return () => clearInterval(addChar);
+		} else {
+			setDisplayedText(finalText)
+		}
 	}, [textIdx])
   
 	return (
-	<div className='home-container'>
-	  <h1>{displayedText}</h1>
-		<p className='fade-1'>happy two years of us. this year, i collected 40 poems to show how much i appreciate you.</p>
-		<p className='fade-2'>no amount of money could describe my love for you. so instead, i gave you my time.</p>
-		<p className='fade-3'>are you ready?</p>
-		<button className='fade-4' onClick={goPoems}>
-			yes
-		</button>
-	</div>
+		<div className='home-container'>
+			<Toggle />
+			<h1>{displayedText}</h1>
+			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '1500' })}>happy two years of us. this year, i collected 40 poems to show how much i appreciate you.</p>
+			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2000' })}>no amount of money could describe my love for you. so instead, i gave you my time.</p>
+			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2500' })}>are you ready?</p>
+			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2500' })}>p.s. there's a button in the top left that toggles animations (i know you hate waiting).</p>
+			<div data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '3000' })} >
+				<button ref={buttonRef} onClick={goPoems}>
+					yes
+				</button>
+			</div>
+	  </div>
+	  
   )
 }
 

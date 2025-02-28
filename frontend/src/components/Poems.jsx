@@ -3,6 +3,11 @@ import { FaArrowRight } from 'react-icons/fa'
 import './styling/Poem.css'
 import { PoemConstant } from '../PoemConstants'
 import { useLocation, useNavigate } from 'react-router-dom'
+import Toggle from './Toggle'
+import { getBackgroundColor, getButtonColor } from '../Constants'
+import { useAppContext } from '../Context'
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 const Poems = () => {
 	const [displayedText, setDisplayedText] = useState("");
@@ -11,24 +16,26 @@ const Poems = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const finalText = "this made me think of you."
+	const { animations } = useAppContext();
 	const buttonRef = useRef(null);
 
 	const isNotDigit = (str) => !/^\d+$/.test(str);
 
-	const getBackgroundColor = () => {
-		switch (location.pathname) {
-			case '/poem':
-				return 'white'
-			
-			default:
-				return '#a64d79'
-		}
-	}
+	useEffect(() => {
+		AOS.init({
+			duration: 1000
+		});
+	}, []);
 
 	useEffect(() => {
-		const color = getBackgroundColor();
+		const color = getBackgroundColor(animations);
 		document.body.style.backgroundColor = color;
-	}, [location.pathname]);
+	}, [location.pathname, animations]);
+
+	useEffect(() => {
+		const color = getButtonColor(animations);
+		buttonRef.current.style.color = color;
+	}, [animations]);
 
 	const getPoem = () => {
 		if (isNotDigit(inputValue) || parseInt(inputValue) > 38 || parseInt(inputValue) < 1) {
@@ -40,17 +47,21 @@ const Poems = () => {
 	}
 
 	useEffect(() => {
-		let addChar;
-		function type() {
-			setDisplayedText((prev) => prev + finalText.charAt(textIdx))
-			setTextIdx((prev) => prev + 1);
-		}
+		if (animations) {
+			let addChar;
+			function type() {
+				setDisplayedText((prev) => prev + finalText.charAt(textIdx))
+				setTextIdx((prev) => prev + 1);
+			}
 
-		if (textIdx < finalText.length) {
-			addChar = setInterval(type, 75)
-		}
+			if (textIdx < finalText.length) {
+				addChar = setInterval(type, 75)
+			}
 
-		return () => clearInterval(addChar);
+			return () => clearInterval(addChar);
+		} else {
+			setDisplayedText(finalText);
+		}
 	}, [textIdx])
 
 	useEffect(() => {
@@ -69,16 +80,17 @@ const Poems = () => {
 
   return (
 	<div className='poems-container'>
-	  <h1>{displayedText}</h1>
-	  <div className='fade-in'>
-		<p>pick a number between 1 and 38</p>
-		<div className='input'>
-			<input type="text" placeholder='i.e. 1' autoFocus onChange={(e) => {setInputValue(e.target.value)}} value={inputValue}/>
-			<button ref={buttonRef} onClick={getPoem}>
-				<FaArrowRight />
-			</button>
+		<Toggle />
+		<h1>{displayedText}</h1>
+		<div className="fade-in" data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2500' })} >
+			<p>pick a number between 1 and 38</p>
+			<div className='input'>
+				<input type="text" placeholder='i.e. 1' autoFocus onChange={(e) => {setInputValue(e.target.value)}} value={inputValue}/>
+				<button ref={buttonRef} onClick={getPoem}>
+					<FaArrowRight />
+				</button>
+			</div>
 		</div>
-	  </div>
 	</div>
   )
 }

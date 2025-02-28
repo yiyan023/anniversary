@@ -2,6 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaArrowRight } from 'react-icons/fa'
 import './styling/Login.css'
+import Toggle from './Toggle';
+import { useAppContext } from '../Context';
+import { getBackgroundColor, getButtonColor } from '../Constants';
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 const Login = () => {
 	const [questionNum, setQuestionNum] = useState(1);
@@ -15,32 +20,27 @@ const Login = () => {
 	const buttonRef = useRef(null);
 	const navigate = useNavigate();
 	const location = useLocation();
+	const { animations } = useAppContext();
 	const FINAL_Q = 3
 	const finalText = "hi there."
 
-	const getBackgroundColor = () => {
-		switch (location.pathname) {
-			case '/poem':
-				return 'white'
-			
-			default:
-				return '#a64d79'
-		}
-	}
-
 	useEffect(() => {
-		const color = getBackgroundColor();
-		console.log(location.pathname);
-		console.log(color);
+		const color = getBackgroundColor(animations);
 		document.body.style.backgroundColor = color;
-	}, [location.pathname]);
+	}, [location.pathname, animations]);
 
 	useEffect(() => {
-	setAnswers({
-		1: ans1,
-		2: ans2,
-		3: ans3
-	});
+		AOS.init({
+			duration: 1000
+		});
+	}, []);
+
+	useEffect(() => {
+		setAnswers({
+			1: ans1,
+			2: ans2,
+			3: ans3
+		});
 	}, [ans1, ans2, ans3]);
 
 	useEffect(() => {
@@ -71,8 +71,15 @@ const Login = () => {
         };
 	}, [])
 
+	useEffect(() => {
+		const color = getButtonColor(animations);
+		buttonRef.current.style.color = color;
+	  }, [animations])
+
 	const clickNext = () => {
-		setFadeOut((prev) => !prev);
+		if (animations) {
+			setFadeOut(true);
+		}
 
 		const questionKey = `VITE_Q${questionNum}`
 		const rightAnswer = import.meta.env[questionKey];
@@ -81,10 +88,14 @@ const Login = () => {
 			if (questionNum == FINAL_Q) {
 				navigate('/home')
 			} else {
-				setTimeout(() => {
+				if (animations) {
+					setTimeout(() => {
+						setQuestionNum(prev => prev + 1);
+						setFadeOut(false);
+					}, 750)
+				} else {
 					setQuestionNum(prev => prev + 1);
-					setFadeOut((prev) => !prev);
-				}, 750);
+				}
 			}
 		} else {
 			navigate("/error");
@@ -93,20 +104,27 @@ const Login = () => {
 
   return (
 	<div className='login-container'>
-	  <h1>{displayedText}</h1>
-	  <div className={`questions ${fadeOut ? 'fade-out' : ''}`}>
+		<Toggle />
+	  {animations ? (
+		<h1>{displayedText}</h1>
+	  ) : (
+		<h1>{finalText}</h1>
+	  )}
+	  <div className="questions">
 		{questionNum == 1 && (
-			<input type="text" placeholder="what is your full name?" value={ans1} onChange={(e) => setAns1(e.target.value)} autoFocus/>
+			<input type="text" className={fadeOut && animations ? 'fade-out' : ''} data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '600' })} placeholder="what is your full name?" value={ans1} onChange={(e) => setAns1(e.target.value)} autoFocus/>
 		)}
 		{questionNum == 2 && (
-			<input type="text" placeholder="what is your partner's full name?" value={ans2} onChange={(e) => setAns2(e.target.value)} autoFocus/>
+			<input type="text" className={fadeOut && animations ? 'fade-out' : ''} data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '600' })} placeholder="what is your partner's full name?" value={ans2} onChange={(e) => setAns2(e.target.value)} autoFocus/>
 		)}
 		{questionNum == 3 && (
-			<input type="text" placeholder="when is your anniversary? (i.e. May 23)" value={ans3} onChange={(e) => setAns3(e.target.value)} autoFocus/>
+			<input type="text" className={fadeOut && animations ? 'fade-out' : ''} data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '600' })} placeholder="when is your anniversary? (i.e. May 23)" value={ans3} onChange={(e) => setAns3(e.target.value)} autoFocus/>
 		)}
-		<button onClick={clickNext} ref={buttonRef}>
-			<FaArrowRight />
-		</button>
+		<div data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '600' })}>
+			<button onClick={clickNext} ref={buttonRef}  >
+				<FaArrowRight />
+			</button>
+		</div>
 	  </div>
 	</div>
   )

@@ -1,0 +1,9 @@
+body {
+	position: relative
+}
+
+.toggle-div button {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+}

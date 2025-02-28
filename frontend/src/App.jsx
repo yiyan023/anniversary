@@ -8,18 +8,21 @@ import Login from './components/login'
 import Poems from './components/poems'
 import Error from './components/Error'
 import PoemTemp from './components/PoemTemp'
+import { AppProvider } from './Context'
 
 function App() {
 	return (
-		<Router>
-			<Routes>
-				<Route path="/"  element={<Login />}/>
-				<Route path="/home" element={<Home />} />
-				<Route path="/poems" element={<Poems />} />
-				<Route path="/error" element={<Error />} />
-				<Route path='/poem' element={<PoemTemp />} />
-			</Routes>
-		</Router>
+		<AppProvider>
+			<Router>
+				<Routes>
+					<Route path="/"  element={<Login />}/>
+					<Route path="/home" element={<Home />} />
+					<Route path="/poems" element={<Poems />} />
+					<Route path="/error" element={<Error />} />
+					<Route path='/poem' element={<PoemTemp />} />
+				</Routes>
+			</Router>
+		</AppProvider>
 	)
 }
 

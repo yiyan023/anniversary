@@ -143,24 +143,16 @@ and only you.`
 },
 "12": {
 emily: 
-`we whisper during movies.
-we laugh over inside jokes.
-we sing off-key on purpose.
-we have a secret language.
-we eat too much takeout.
-we share everything we can.
-we are best friends and lovers.
-we are perfectly imperfect. 
+`we whisper during movies. we laugh over inside jokes.
+we sing off-key on purpose. we have a secret language.
+we eat too much takeout. we share everything we can.
+we are best friends and lovers. we are perfectly imperfect. 
 we are how i want to be forever.`,
 me:
-`I still remember 
-that one night in Kingston 
-where we spent hours 
-trying to figure out 
-why Steel-type Pokemon 
-are immune to Poison-type Pokemon. 
-I love how we can spend hours 
-talking and laughing about anything. 
+`I still remember that one night in Kingston 
+where we spent hours trying to figure out 
+why Steel-type Pokemon are immune to Poison-type Pokemon. 
+I love how we can spend hours talking and laughing about anything. 
 These moments never go unnoticed.`
 },
 "13": {

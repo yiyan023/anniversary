@@ -60,7 +60,7 @@ button {
   align-items: center;
 }
 button:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) !important;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
 
@@ -70,7 +70,7 @@ button:focus-visible {
 }
 
 input {
-	background-color: #a64d79;
+	background-color: transparent;
 	outline: 1px solid white;
 	font-family: 'Esteban', serif;
 	border:none;
@@ -95,4 +95,8 @@ input::placeholder {
   button {
     background-color: #f9f9f9;
   }
+}
+
+[data-aos="fade-in"] {
+	transform: none !important;
 }

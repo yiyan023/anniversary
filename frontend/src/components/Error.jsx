@@ -1,56 +1,69 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import './styling/Error.css'
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./styling/Error.css";
+import Toggle from "./Toggle";
+import { useAppContext } from "../Context";
+import { getBackgroundColor, getButtonColor } from "../Constants";
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 const Error = () => {
-	const [displayedText, setDisplayedText] = useState("")
-	const [textIdx, setTextIdx] = useState(0);
-	const navigate = useNavigate();
-	const location = useLocation();
-	const finalText = "sorry, you don't have access."
+  const [displayedText, setDisplayedText] = useState("");
+  const [textIdx, setTextIdx] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { animations } = useAppContext();
+  const buttonRef = useRef(null);
+  const finalText = "sorry, you don't have access.";
 
-	const getBackgroundColor = () => {
-		switch (location.pathname) {
-			case '/poem':
-				return 'white'
-			
-			default:
-				return '#a64d79'
-		}
-	}
+  useEffect(() => {
+    const color = getBackgroundColor(animations);
+    document.body.style.backgroundColor = color;
+  }, [location.pathname, animations]);
 
-	useEffect(() => {
-		const color = getBackgroundColor();
-		document.body.style.backgroundColor = color;
-	}, [location.pathname]);
-	
-	const goBack = () => {
-		navigate("/");
-	}
+  useEffect(() => {
+	const color = getButtonColor(animations);
+	buttonRef.current.style.color = color;
+  }, [animations])
 
-	useEffect(() => {
-		let addChar;
-		function type() {
-			setDisplayedText((prev) => prev + finalText.charAt(textIdx))
-			setTextIdx((prev) => prev + 1);
-		}
+  const goBack = () => {
+    navigate("/");
+  };
 
-		if (textIdx < finalText.length) {
-			addChar = setInterval(type, 75)
-		}
+  useEffect(() => {
+    if (animations) {
+      let addChar;
+      function type() {
+        setDisplayedText((prev) => prev + finalText.charAt(textIdx));
+        setTextIdx((prev) => prev + 1);
+      }
 
-		return () => clearInterval(addChar);
-	}, [textIdx])
+      if (textIdx < finalText.length) {
+        addChar = setInterval(type, 75);
+      }
 
-	return (
-		<div className='error-container'>
-			<h1>{displayedText}</h1>
-			<div className='try-again'>
-				<p>if you aren't my boyfriend, this isn't meant for you.</p>
-				<button onClick={goBack}>try again</button>
-			</div>
-		</div>
-	)
-}
+      return () => clearInterval(addChar);
+    } else {
+      setDisplayedText(finalText);
+    }
+  }, [textIdx]);
 
-export default Error
+  useEffect(() => {
+	AOS.init({
+		duration: 1000
+	});
+}, []);
+
+  return (
+    <div className="error-container">
+      <Toggle />
+      <h1>{displayedText}</h1>
+      <div className="try-again" data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2500' })}>
+        <p>if you aren't my boyfriend, this isn't meant for you.</p>
+        <button onClick={goBack} ref={buttonRef}>try again</button>
+      </div>
+    </div>
+  );
+};
+
+export default Error;
