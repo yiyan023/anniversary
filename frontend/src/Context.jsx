@@ -24,8 +24,10 @@ export const AppProvider = ({ children }) => {
 
   const addSession = () => setSession(true);
 
+  const removeSession = () => setSession(false);
+
   const value = useMemo(
-    () => ({ animations, toggleAnimations, session, addSession }),
+    () => ({ animations, toggleAnimations, session, addSession, removeSession }),
     [animations, session]
   );
 

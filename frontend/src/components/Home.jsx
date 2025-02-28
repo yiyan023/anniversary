@@ -14,11 +14,17 @@ const Home = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const buttonRef = useRef(null);
-	const { animations }= useAppContext();
+	const { animations, session }= useAppContext();
 
 	const goPoems = () => {
 		navigate('/poems');
 	}
+
+	useEffect(() => {
+		if (!session) {
+			navigate('/')
+		}
+	}, [session])
 
 	useEffect(() => {
 		const color = getBackgroundColor(animations);
@@ -60,8 +66,8 @@ const Home = () => {
 			<h1>{displayedText}</h1>
 			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '1500' })}>happy two years of us. this year, i collected 40 poems to show how much i appreciate you.</p>
 			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2000' })}>no amount of money could describe my love for you. so instead, i gave you my time.</p>
-			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2500' })}>are you ready?</p>
 			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2500' })}>p.s. there's a button in the top left that toggles animations (i know you hate waiting).</p>
+			<p data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '3000' })}>are you ready?</p>
 			<div data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '3000' })} >
 				<button ref={buttonRef} onClick={goPoems}>
 					yes

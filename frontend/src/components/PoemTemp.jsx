@@ -23,8 +23,14 @@ const PoemTemp = () => {
 	const myRef = useRef(null);
 	const location = useLocation();
 	const navigate = useNavigate();
-	const { animations } = useAppContext();
+	const { animations, session } = useAppContext();
 	const { num } = location.state || {}
+
+	useEffect(() => {
+		if (!session) {
+			navigate('/')
+		}
+	}, [session])
 
 	useEffect(() => {
 		const color = getBackgroundColor(animations);
@@ -36,15 +42,22 @@ const PoemTemp = () => {
 		const color = getButtonColor(animations);
 		const emilyColor = getEmilyColor(animations);
 		const myColor = getMyColor(animations);
-		nextBtnRef.current.style.color = color;
-		prevBtnRef.current.style.color = color;
+
+		if (num < 38) {
+			nextBtnRef.current.style.color = color;
+			nextBtnRef.current.style.backgroundColor = bgColor;
+		}
+
+		if (num > 1) {
+			prevBtnRef.current.style.color = color;
+			prevBtnRef.current.style.backgroundColor = bgColor;
+		}
+		
 		backBtnRef.current.style.color = color;
-		nextBtnRef.current.style.backgroundColor = bgColor;
-		prevBtnRef.current.style.backgroundColor = bgColor;
 		backBtnRef.current.style.backgroundColor = bgColor;
 		emilyRef.current.style.color = emilyColor;
 		myRef.current.style.color = myColor;
-	}, [animations])
+	}, [animations, num])
 
 	useEffect(() => {
 		setEmilyVerse(PoemConstant[num]["emily"]);

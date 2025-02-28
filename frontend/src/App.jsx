@@ -9,6 +9,7 @@ import Poems from './components/poems'
 import Error from './components/Error'
 import PoemTemp from './components/PoemTemp'
 import { AppProvider } from './Context'
+import NoPage from './components/NoPage'
 
 function App() {
 	return (
@@ -20,6 +21,7 @@ function App() {
 					<Route path="/poems" element={<Poems />} />
 					<Route path="/error" element={<Error />} />
 					<Route path='/poem' element={<PoemTemp />} />
+					<Route path="*" element={<NoPage />} />
 				</Routes>
 			</Router>
 		</AppProvider>

@@ -20,7 +20,7 @@ const Login = () => {
 	const buttonRef = useRef(null);
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { animations } = useAppContext();
+	const { animations, session, addSession } = useAppContext();
 	const FINAL_Q = 3
 	const finalText = "hi there."
 
@@ -28,6 +28,12 @@ const Login = () => {
 		const color = getBackgroundColor(animations);
 		document.body.style.backgroundColor = color;
 	}, [location.pathname, animations]);
+
+	useEffect(() => {
+		if (session) {
+			navigate('/home');
+		}
+	}, [session])
 
 	useEffect(() => {
 		AOS.init({
@@ -86,6 +92,7 @@ const Login = () => {
 		
 		if (answers[questionNum].toLowerCase() === rightAnswer) {
 			if (questionNum == FINAL_Q) {
+				addSession();
 				navigate('/home')
 			} else {
 				if (animations) {

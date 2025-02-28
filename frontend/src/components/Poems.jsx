@@ -13,13 +13,20 @@ const Poems = () => {
 	const [displayedText, setDisplayedText] = useState("");
 	const [textIdx, setTextIdx] = useState(0);
 	const [inputValue, setInputValue] = useState("");
+	const [ invalidNum, setInvalidNum ] = useState(false);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const finalText = "this made me think of you."
-	const { animations } = useAppContext();
+	const { animations, session } = useAppContext();
 	const buttonRef = useRef(null);
-
+	
 	const isNotDigit = (str) => !/^\d+$/.test(str);
+
+	useEffect(() => {
+		if (!session) {
+			navigate('/')
+		}
+	}, [session])
 
 	useEffect(() => {
 		AOS.init({
@@ -39,7 +46,7 @@ const Poems = () => {
 
 	const getPoem = () => {
 		if (isNotDigit(inputValue) || parseInt(inputValue) > 38 || parseInt(inputValue) < 1) {
-			console.log("Invalid.")
+			setInvalidNum(true);
 		} else {
 			const data = { num: inputValue };
 			navigate('/poem', { state: data });
@@ -85,12 +92,15 @@ const Poems = () => {
 		<div className="fade-in" data-aos={animations ? 'fade-in' : 'none'} {...(animations && { 'data-aos-delay': '2500' })} >
 			<p>pick a number between 1 and 38</p>
 			<div className='input'>
-				<input type="text" placeholder='i.e. 1' autoFocus onChange={(e) => {setInputValue(e.target.value)}} value={inputValue}/>
+				<input type="text" placeholder='i.e. 1' autoFocus onChange={(e) => {setInputValue(e.target.value); setInvalidNum(false);}} value={inputValue}/>
 				<button ref={buttonRef} onClick={getPoem}>
 					<FaArrowRight />
 				</button>
 			</div>
 		</div>
+		{invalidNum && (
+			<p className='invalid'>invalid.</p>
+		)}
 	</div>
   )
 }
