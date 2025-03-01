@@ -62,71 +62,75 @@ const PoemTemp = () => {
 	useEffect(() => {
 		setEmilyVerse(PoemConstant[num]["emily"]);
 		setMyVerse(PoemConstant[num]["me"])
+
+		if (!animations) {
+			setTypeMine(true);
+		}
 	}, [num])
 
 	useEffect(() => {
 		if (animations) {
-			let addChar;
-		
+			let addCharEmily, addCharMe;
+	
 			function typeEmily() {
 				setDisplayedEmily((prev) => prev + emilyVerse.charAt(emilyIdx));
 				setEmilyIdx((prev) => prev + 1);
 			}
-
-			if (emilyIdx == 0) {
-				addChar = setTimeout(() => {
+	
+			function typeMe() {
+				setDisplayedMe((prev) => prev + myVerse.charAt(meIdx));
+				setMeIdx((prev) => prev + 1);
+			}
+	
+			// Handle Emily's typing animation
+			if (emilyIdx === 0) {
+				addCharEmily = setTimeout(() => {
 					typeEmily();
 				}, 200);
 			} else if (emilyIdx < emilyVerse.length) {
-			if (emilyVerse.charAt(emilyIdx) === "\n") {
-				addChar = setTimeout(() => {
-				typeEmily();
-				}, 500);
-			} else {
-				addChar = setInterval(typeEmily, 40); 
-			}
-			} else {
-				setTypeMine(true);
-			}
-		
-			return () => clearInterval(addChar);
-		} else {
-			setDisplayedEmily(emilyVerse);
-			setTypeMine(true);
-		}
-	}, [emilyVerse, emilyIdx]);
-
-	useEffect(() => {
-		if (animations) {
-			let addChar;
-		
-			function typeMe() {
-			setDisplayedMe((prev) => prev + myVerse.charAt(meIdx));
-			setMeIdx((prev) => prev + 1);
-			}
-
-			if (meIdx < myVerse.length && typeMine) {
-				if (myVerse.charAt(meIdx) === "\n") {
-				addChar = setTimeout(() => {
-					typeMe();
-				}, 500);
+				if (emilyVerse.charAt(emilyIdx) === "\n") {
+					addCharEmily = setTimeout(() => {
+						typeEmily();
+					}, 500);
 				} else {
-				addChar = setInterval(typeMe, 40); 
+					addCharEmily = setInterval(typeEmily, 40);
+				}
+			} else {
+				// Once Emily's verse is typed, set typeMine to true
+				if (!typeMine) {
+					setTypeMine(true);
 				}
 			}
-			
-			return () => clearInterval(addChar);
+	
+			// Handle myVerse typing animation only if typeMine is true
+			if (typeMine && meIdx < myVerse.length) {
+				if (myVerse.charAt(meIdx) === "\n") {
+					addCharMe = setTimeout(() => {
+						typeMe();
+					}, 500);
+				} else {
+					addCharMe = setInterval(typeMe, 40);
+				}
+			}
+	
+			// Clean up timers
+			return () => {
+				clearInterval(addCharEmily);
+				clearInterval(addCharMe);
+			};
 		} else {
+			setDisplayedEmily(emilyVerse);
 			setDisplayedMe(myVerse);
 		}
-	}, [meIdx, typeMine])
+	}, [emilyVerse, emilyIdx, myVerse, meIdx, typeMine]);
+	
 
 	const resetState = () => {
 		setDisplayedEmily("");
 		setEmilyIdx(0);
 		setDisplayedMe("");
 		setMeIdx(0);
-		setTypeMine(false);
+		setTypeMine(false)
 	}
 	  
 	const nextPoem = () => {
